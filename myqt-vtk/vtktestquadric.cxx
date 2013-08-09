@@ -1,0 +1,157 @@
+#include <vtkVersion.h>
+
+
+#include "vtkstuff.h"
+ 
+
+ 
+int VtkInterface::dostuff(int argc, std::string filename)
+{
+  imageData =
+    vtkSmartPointer<vtkImageData>::New();
+  if (argc < 2)
+    {
+   createImageData();
+    }
+  else
+    {
+    reader = 
+      vtkSmartPointer<vtkXMLImageDataReader>::New();
+   // reader->SetFileName(argv[1]);
+    reader->Update();
+    imageData->ShallowCopy(reader->GetOutput());
+    }
+ 
+  renWin = 
+    vtkSmartPointer<vtkRenderWindow>::New();
+   ren1 = 
+    vtkSmartPointer<vtkRenderer>::New();
+  ren1->SetBackground(0.1,0.4,0.2);
+ 
+  renWin->AddRenderer(ren1);
+ 
+  renWin->SetSize(301,300); // intentional odd and NPOT  width/height
+ 
+  iren = 
+    vtkSmartPointer<vtkRenderWindowInteractor>::New();
+  iren->SetRenderWindow(renWin);
+ 
+ // renWin->Render(); // make sure we have an OpenGL context.
+ 
+ volumeMapper = 
+    vtkSmartPointer<vtkSmartVolumeMapper>::New();
+  volumeMapper->SetBlendModeToComposite(); // composite first
+#if VTK_MAJOR_VERSION <= 5
+  volumeMapper->SetInputConnection(imageData->GetProducerPort());
+#else
+  volumeMapper->SetInputData(imageData);
+#endif  
+volumeProperty = 
+    vtkSmartPointer<vtkVolumeProperty>::New();
+  volumeProperty->ShadeOff();
+  volumeProperty->SetInterpolationType(VTK_LINEAR_INTERPOLATION);
+ 
+/*
+  vtkSmartPointer<vtkPiecewiseFunction> compositeOpacity = 
+    vtkSmartPointer<vtkPiecewiseFunction>::New();
+  compositeOpacity->AddPoint(0.0,0.0);
+  compositeOpacity->AddPoint(80.0,1.0);
+  compositeOpacity->AddPoint(80.1,0.0);
+  compositeOpacity->AddPoint(15000.0,1.0);
+  volumeProperty->SetScalarOpacity(compositeOpacity); // composite first.
+ */
+vtkPiecewiseFunction *volumeGradientOpacity = vtkPiecewiseFunction::New();
+volumeProperty->SetGradientOpacity(volumeGradientOpacity);
+
+volumeGradientOpacity->AddPoint(0.0,0.0);
+volumeGradientOpacity->AddPoint(0.5,1.0);
+volumeGradientOpacity->AddPoint(0.8,0.0);
+volumeGradientOpacity->AddPoint(1.0,1.0);
+  volumeGradientOpacity->AddPoint(5.0,0.0);
+  volumeGradientOpacity->AddPoint(80.1,0.0);
+  volumeGradientOpacity->AddPoint(255.0,0.0);
+
+  vtkSmartPointer<vtkColorTransferFunction> color = 
+    vtkSmartPointer<vtkColorTransferFunction>::New();
+  color->AddRGBPoint(0.0  ,0.0,0.0,1.0);
+  color->AddRGBPoint(40.0  ,1.0,0.0,0.0);
+  color->AddRGBPoint(255.0,1.0,1.0,1.0);
+  volumeProperty->SetColor(color);
+
+
+
+ 
+  vtkSmartPointer<vtkVolume> volume = 
+    vtkSmartPointer<vtkVolume>::New();
+  volume->SetMapper(volumeMapper);
+  volume->SetProperty(volumeProperty);
+  ren1->AddViewProp(volume);
+  ren1->ResetCamera();
+ 
+  // Render composite. In default mode. For coverage.
+ // renWin->Render();
+ 
+  // 3D texture mode. For coverage.
+//  volumeMapper->SetRequestedRenderModeToRayCastAndTexture();
+  //renWin->Render();
+ 
+  // Software mode, for coverage. It also makes sure we will get the same
+  // regression image on all platforms.
+//  volumeMapper->SetRequestedRenderModeToRayCast();
+//  renWin->Render();
+ 
+ // iren->Start();
+ 
+  return EXIT_SUCCESS;
+}
+ 
+void VtkInterface::createImageData()
+{
+  // Create a spherical implicit function.
+  vtkSmartPointer<vtkSphere> sphere =
+    vtkSmartPointer<vtkSphere>::New();
+  sphere->SetRadius(0.1);
+  sphere->SetCenter(0.0,0.0,0.0);
+ 
+vtkQuadric *quadric = vtkQuadric::New();
+  quadric->SetCoefficients(10,0,0.0,0,0.0,0,0,0.0,0,0);
+
+  vtkSmartPointer<vtkSampleFunction> sampleFunction =
+    vtkSmartPointer<vtkSampleFunction>::New();
+
+
+  sampleFunction->SetImplicitFunction(quadric); 
+
+  sampleFunction->SetOutputScalarTypeToDouble();
+  sampleFunction->SetSampleDimensions(127,127,127); // intentional NPOT dimensions.
+  sampleFunction->SetModelBounds(-1.0,1.0,-1.0,1.0,-1.0,1.0);
+  sampleFunction->SetCapping(false);
+  sampleFunction->SetComputeNormals(false);
+  sampleFunction->SetScalarArrayName("values");
+  sampleFunction->Update();
+
+
+ 
+  vtkDataArray* a = sampleFunction->GetOutput()->GetPointData()->GetScalars("values");
+  double range[2];
+  a->GetRange(range);
+ 
+  vtkSmartPointer<vtkImageShiftScale> t = 
+    vtkSmartPointer<vtkImageShiftScale>::New();
+  t->SetInputConnection(sampleFunction->GetOutputPort());
+ 
+  t->SetShift(-range[0]);
+  double magnitude=range[1]-range[0];
+  if(magnitude==0.0)
+    {
+    magnitude=1.0;
+    }
+  t->SetScale(255.0/magnitude);
+  t->SetOutputScalarTypeToUnsignedChar();
+ 
+  t->Update();
+ 
+  imageData->ShallowCopy(t->GetOutput());
+
+
+}
