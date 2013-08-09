@@ -26,6 +26,11 @@ void twoDOpacityFunction::addPolygonToTable(std::vector<twoDOpacityFloatPoint> p
 		double* table, float xStart, float xEnd, float yStart, float yEnd,
 		int sizeX, int sizeY, int strideX, int strideY) {
 
+	for (int i = 0; i< sizeX*sizeY; i++){
+		table[i]=0; //clear the table, we fill in the non zero values below
+	}
+
+
 //find starting and end points on the table
 	float maxX = 0, maxY = 0, minY, minX;
 	maxX = points[0].x;
