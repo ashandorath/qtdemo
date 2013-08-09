@@ -6,7 +6,7 @@
  #include <QImage>
  #include <QPoint>
  #include <QWidget>
-#include "point.h"
+#include "custommath.h"
 
 
 
@@ -103,7 +103,7 @@ public:
 
      int createNewPolygon();
 
-     void packUpAreas(std::vector<std::vector<twoDFloatPoint> > &areas);
+     void packUpAreas(std::vector<std::vector<twoDOpacityFloatPoint> > &areas);
 
 
  protected:
@@ -115,7 +115,7 @@ public:
      void resizeEvent(QResizeEvent *event);
 
  private:
-     twoDFloatPoint drawPointToRealPoint(QPoint position);
+     twoDOpacityFloatPoint drawPointToRealPoint(QPoint position, float opacity);
 
      void colorOpacity();
      bool insidePolygon(float px, float py, const opacityPolygon &polygon);

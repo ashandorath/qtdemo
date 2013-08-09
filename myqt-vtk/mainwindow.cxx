@@ -143,10 +143,10 @@ newPolygon->setObjectName(QString::fromUtf8("newPolygon"));
 newPolygon->setGeometry(QRect(480, 520, 100, 30));
 newPolygon->setText(QApplication::translate("MainWindow", "newPolygon", 0, QApplication::UnicodeUTF8));
 
-render = new QPushButton(this);
-render->setObjectName(QString::fromUtf8("render"));
-render->setGeometry(QRect(480, 560, 100, 30));
-render->setText(QApplication::translate("MainWindow", "render", 0, QApplication::UnicodeUTF8));
+renderButton = new QPushButton(this);
+renderButton->setObjectName(QString::fromUtf8("render"));
+renderButton->setGeometry(QRect(480, 560, 100, 30));
+renderButton->setText(QApplication::translate("MainWindow", "render", 0, QApplication::UnicodeUTF8));
 
 
 polygonList = new PolygonComboBox(this);
@@ -243,3 +243,8 @@ void MainWindow::createNewPolygon(){
 void MainWindow::handleSelectionChanged(int index){
 		 drawArea->currentPolygon = polygonList->currentText().toInt()-1;
 	 }
+
+
+void MainWindow::render(){
+
+}

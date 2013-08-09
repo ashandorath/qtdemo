@@ -401,18 +401,18 @@ void DrawArea::changeDisplayPolygonList(int index){
 }
 
 
-twoDFloatPoint DrawArea::drawPointToRealPoint(QPoint position){
+twoDOpacityFloatPoint DrawArea::drawPointToRealPoint(QPoint position, float opacity){
 	//tbd
-	return twoDFloatPoint(position.x(),position.y());
+	return twoDOpacityFloatPoint(position.x(),position.y(), opacity);
 }
 
-void DrawArea::packUpAreas(std::vector<std::vector<twoDFloatPoint> > &areas){
+void DrawArea::packUpAreas(std::vector<std::vector<twoDOpacityFloatPoint> > &areas){
 	float x,y;
 	for (int i = 0; i<polygons.size(); i++){
-		//std::vector<twoDFloatPoint> temp;
-		areas.push_back(std::vector<twoDFloatPoint>());
+		//std::vector<twoDOpacityFloatPoint> temp;
+		areas.push_back(std::vector<twoDOpacityFloatPoint>());
 		for (int j = 0; j< polygons[i].count(); j++){
-				areas[i].push_back(drawPointToRealPoint(polygons[i].point(j).position));
+				areas[i].push_back(drawPointToRealPoint(polygons[i].point(j).position, polygons[i].point(j).opacity));
 		}
 	}
 }

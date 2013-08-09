@@ -40,7 +40,7 @@
 QPushButton *apply;
 QPushButton *setOpacity;
 QPushButton *newPolygon;
-QPushButton *render;
+QPushButton *renderButton;
 
 
 QLineEdit *setMinGradient;
@@ -76,6 +76,7 @@ QLineEdit *opacityValue;
  void applyOpacity();
  void createNewPolygon();
  void handleSelectionChanged(int index);
+ void render();
 
 
  private:
