@@ -1,11 +1,12 @@
 #include "twoDOpacityFunction.h"
+#include <math.h>
 
 
 
 float cotangent(twoDFloatPoint a, twoDFloatPoint b, twoDFloatPoint c){
 	twoDFloatPoint ba(a.x-b.x, a.y-b.y);
 	twoDFloatPoint bc(c.x-b.x, c.y-b.y);
-	return ((bc.x*ba.x+bc.y*ba.y)/twoDcross(bc.x,ba.x,bc.y,ba.y)/Math::abs(bc.x*ba.y-ba.y*bc.x));
+	return ((bc.x*ba.x+bc.y*ba.y)/fabs(bc.x*ba.y-ba.y*bc.x));
 }
 
 /*
@@ -26,7 +27,7 @@ void twoDOpacityFunction::computeBarycentricCoordinates(twoDFloatPoint p, std::v
 	for (int i = 0; i< size; i++){
 		prev = (i+size-1)%size;
 		next = (i+1)%size;
-		w[i] = (cotangent(p, polygon[i],polygon[prev])+cotangent(p,polygon[i],polygon[next]))/pow(p-polygon[i],2);
+		w[i] = (cotangent(p, polygon[i],polygon[prev])+cotangent(p,polygon[i],polygon[next]))/sqrt(pow(p.x-polygon[i].x+p.y-polygon[i].y,2));
 		weightSum += w[i];
 	}
 
@@ -59,28 +60,28 @@ foreach weight w_j
 
 
 
-twoDOpacityFunction::addPolygonToTable(std::vector<twoDFloatPoint> points, double* table, double xStart, double xEnd, double yStart,
+void twoDOpacityFunction::addPolygonToTable(std::vector<twoDFloatPoint> points, double* table, double xStart, double xEnd, double yStart,
 		double yEnd, int sizeX, int sizeY, int strideX, int strideY){
 
 //find starting and end points on the table
-	double maxX=0, maxY=0, minY, minY;
+	double maxX=0, maxY=0, minY, minX;
 	maxX = points[0].x;
 	minX = points[0].x;
 	maxY = points[0].y;
 	minY = points[0].y;
 	for (int i = 1; i< points.size(); i++){
-		maxX = points[i].x>maxX ? points[i] : maxX;
-		minX = points[i].x<maxX ? points[i] : minX;
-		maxY = points[i].y>maxY ? points[i] : maxY;
-		minY = points[i].y<minY ? points[i] : minY;
+		maxX = points[i].x>maxX ? points[i].x : maxX;
+		minX = points[i].x<maxX ? points[i].x : minX;
+		maxY = points[i].y>maxY ? points[i].y : maxY;
+		minY = points[i].y<minY ? points[i].y : minY;
 	}
 
-	int xTableStart, xTableEnd, yTableStart, YTableEnd;
+	int xTableStart, xTableEnd, yTableStart, yTableEnd;
 
 	xTableStart = floor((minX-xStart)/((double)sizeX));
 	xTableEnd = ceil((maxX-xStart)/((double)sizeX));
-	yTableStart = floor((minY-yStart)/((double)sizey));
-	yTableEnd = ceil((maxY-yStart)/((double)sizey));
+	yTableStart = floor((minY-yStart)/((double)sizeY));
+	yTableEnd = ceil((maxY-yStart)/((double)sizeY));
 
 //x is accross on the field, y is up down ->
 	for (int i = yTableStart; i<yTableEnd; i++){
@@ -94,7 +95,7 @@ twoDOpacityFunction::addPolygonToTable(std::vector<twoDFloatPoint> points, doubl
 
 
 
-twoDOpacityFunction::getTable(const std::vector<std::vector<twoDFloatPoint> > &areas,
+void twoDOpacityFunction::getTable(const std::vector<std::vector<twoDFloatPoint> > &areas,
 		double* table, double xStart, double xEnd, double yStart,
 		double yEnd, int sizeX, int sizeY, int strideX, int strideY){
 

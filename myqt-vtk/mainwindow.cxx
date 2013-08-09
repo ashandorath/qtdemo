@@ -145,7 +145,7 @@ newPolygon->setText(QApplication::translate("MainWindow", "newPolygon", 0, QAppl
 
 render = new QPushButton(this);
 render->setObjectName(QString::fromUtf8("render"));
-render->setGeometry(QRect(480, 520, 100, 30));
+render->setGeometry(QRect(480, 560, 100, 30));
 render->setText(QApplication::translate("MainWindow", "render", 0, QApplication::UnicodeUTF8));
 
 
