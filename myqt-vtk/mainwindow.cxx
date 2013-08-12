@@ -6,6 +6,7 @@
 #include <iostream>
 #include "vtkwindow.h"
 #include "polygoncombobox.h"
+#include "errorwindow.h"
 
 
 
@@ -28,6 +29,7 @@ MainWindow::MainWindow()
      vtkWindow->setWindowFlags(Qt::Window);
      vtkWindow->setupWindow();
      vtkWindow->show();
+
 
 
  }
@@ -166,16 +168,6 @@ setOpacity->setGeometry(QRect(480, 480, 113, 27));
 setOpacity->setText(QApplication::translate("MainWindow", "Apply Opacity", 0, QApplication::UnicodeUTF8));
 
 
-/*
-
-qvtkWidgetLeft = new pqQVTKWidget(this);
-        qvtkWidgetLeft->setObjectName(QString::fromUtf8("qvtkWidgetLeft"));
-        qvtkWidgetLeft->setGeometry(QRect(700, 100, 100, 100));
-
-*/
-
-
-//drawArea->polygonComboBox=polygonList;
 std::cout <<"drawarea initialized" << std::endl;
 
 
@@ -189,14 +181,7 @@ connect(newPolygon, SIGNAL(clicked()), this, SLOT(createNewPolygon()));
 
 connect(polygonList, SIGNAL(currentIndexChanged(int)), this, SLOT(handleSelectionChanged(int)));
 
-//qvtkWidgetLeft->GetRenderWindow()->AddRenderer(volumeDisplay->ren1);
 
-
-/*
- LabelA = new QLabel(this);
-        LabelA->setObjectName(QString::fromUtf8("LabelA"));
-        LabelA->setGeometry(QRect(110, 130, 66, 17));
-*/
 }
 
 
@@ -223,7 +208,8 @@ void MainWindow::setValues(){
 	        maxv = (setMaxValue -> text()).toDouble(&ander); succeed = succeed && ander;
 	if (!succeed)
 	{
-		std::cout << "a value could not be converted to doubles. Values not changed" << std::endl;
+		 //QString dialog();
+		 displayErrorWindow("A value could not be converted to double. Please enter valid numbers");
 		return;
 	}
 	drawArea ->setvalues(ming, maxg, minv, maxv);
