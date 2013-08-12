@@ -17,6 +17,7 @@ void VtkWindow::setupWindow(){
 	vtkDisplay->setObjectName(QString::fromUtf8("qvtkWidgetLeft"));
 	vtkDisplay->setGeometry(QRect(0, 0, width, height));
 
+
 	vtkInterface = new VtkInterface();
 	std::string temp = "temp";
 

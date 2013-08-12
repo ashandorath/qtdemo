@@ -23,6 +23,7 @@ void DrawArea::initialize(){
 void DrawArea::resizeImage(QImage *image, const QSize &newSize) {
 	if (image->size() == newSize)
 		return;
+
 	QImage newImage(newSize, QImage::Format_RGB32);
 	newImage.fill(qRgb(255, 255, 255));
 	QPainter painter(&newImage);
@@ -97,6 +98,17 @@ bool DrawArea::insidePolygon(float px, float py, const opacityPolygon &polygon){
 void DrawArea::colorOpacity(){
 
 	unsigned int nPolygons = polygons.size();
+	int maxsize = 0;
+
+	for (int i = 0; i< nPolygons; i++){
+		if (polygons[i].count()>maxsize){
+			maxsize = polygons[i].count();
+		}
+	}
+	float * weights = new float[maxsize];
+
+
+	int weightsize = polygons[0].count();
 	for (int i = 0; i< image.width(); i++){
 		for (int j = 0; j < image.height(); j++){
 			for (int l = 0; l<nPolygons; l++){
@@ -104,17 +116,17 @@ void DrawArea::colorOpacity(){
 				if (insidePolygon((float)i, (float) j, polygons[l]) ){
 					float average = 0.0f;
 	//switch to general barycentric coordinates. see firefox tab
+					computeBarycentricCoordinates(twoDOpacityPoint((float)i, (float)j), polygons[l], weights);
 					int size = polygons[l].count();
 					for ( int k = 0; k<size; k++){
-						average += polygons[l].point(k).opacity* sqrt(
-								pow(((float) polygons[l].point(k).position.x())-((float) i),2)+
-								pow(((float) polygons[l].point(k).position.y())-((float) j),2) );
+						average += weights[k]*polygons[l].point(k).opacity;
 					}
-					image.setPixel(i,j,qRgb(average*255,0,0));
+					image.setPixel(i,j,qRgb((int)(average*255),0,0));
 				}
 			}
 		}
 	}
+	delete weights;
 	update();
 }
 
@@ -172,11 +184,11 @@ void DrawArea::drawCircles() {
 /*
 bool DrawArea::nearPoint(const QPoint &point) {
 	bool near = false;
-	unsigned int size = opacityPoints.size();
+	unsigned int size = twoDOpacityPoints.size();
 	for (unsigned int i = 0; i < size; i++) {
 		if (sqrt(
-				pow(opacityPoints[i].position.x() - point.x(), 2)
-						+ pow(opacityPoints[i].position.y() - point.y(), 2))) {
+				pow(twoDOpacityPoints[i].position.x() - point.x(), 2)
+						+ pow(twoDOpacityPoints[i].position.y() - point.y(), 2))) {
 			near = true;
 			break;
 		}
@@ -285,7 +297,7 @@ void DrawArea::mousePressEvent(QMouseEvent *event) {
 
 		}
 		else if (nearLine(event->pos(), maximumDistanceFromLine, polygonIndex, lineindex)) {
-			polygons[polygonIndex].points.insert(polygons[polygonIndex].points.begin() + lineindex, opacityPoint(event->pos()));
+			polygons[polygonIndex].points.insert(polygons[polygonIndex].points.begin() + lineindex, twoDOpacityPoint(event->pos()));
 			drawLines(Qt::blue);
 			drawCircles();
 			movingCircle=true;
@@ -300,7 +312,7 @@ void DrawArea::mousePressEvent(QMouseEvent *event) {
 
 		else {
 
-			polygons[currentPolygon].points.push_back(opacityPoint(event->pos()));
+			polygons[currentPolygon].points.push_back(twoDOpacityPoint(event->pos()));
 			drawLines(Qt::blue);
 			drawCircles();
 			selectedPoint = polygons[currentPolygon].count()-1;
@@ -312,7 +324,7 @@ void DrawArea::mousePressEvent(QMouseEvent *event) {
 		if (nearPoint(polygonIndex, movingPointIndex, event->pos())){
 			selectedPoint = movingPointIndex;
 			currentPolygon = polygonIndex;
-			deleteOpacityPoint(currentPolygon, selectedPoint);
+			deletetwoDOpacityPoint(currentPolygon, selectedPoint);
 		}
 
 	}
@@ -366,7 +378,7 @@ unsigned int DrawArea::getSelectedPolygon(){
 }
 
 
-void DrawArea::deleteOpacityPoint(int polygonIndex, int index){
+void DrawArea::deletetwoDOpacityPoint(int polygonIndex, int index){
 	if (polygonIndex < polygons.size()){
 		if (index < polygons[polygonIndex].count()){
 			polygons[polygonIndex].points.erase(polygons[polygonIndex].points.begin() + index);
@@ -401,16 +413,16 @@ void DrawArea::changeDisplayPolygonList(int index){
 }
 
 
-twoDOpacityFloatPoint DrawArea::drawPointToRealPoint(QPoint position, float opacity){
+twoDOpacityPoint DrawArea::drawPointToRealPoint(QPoint position, float opacity){
 	//tbd
-	return twoDOpacityFloatPoint(position.x(),position.y(), opacity);
+	return twoDOpacityPoint(position.x(),position.y(), opacity);
 }
 
-void DrawArea::packUpAreas(std::vector<std::vector<twoDOpacityFloatPoint> > &areas){
+void DrawArea::packUpAreas(std::vector<std::vector<twoDOpacityPoint> > &areas){
 	float x,y;
 	for (int i = 0; i<polygons.size(); i++){
-		//std::vector<twoDOpacityFloatPoint> temp;
-		areas.push_back(std::vector<twoDOpacityFloatPoint>());
+		//std::vector<twoDOpacityPoint> temp;
+		areas.push_back(std::vector<twoDOpacityPoint>());
 		for (int j = 0; j< polygons[i].count(); j++){
 				areas[i].push_back(drawPointToRealPoint(polygons[i].point(j).position, polygons[i].point(j).opacity));
 		}

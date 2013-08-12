@@ -175,7 +175,7 @@ qvtkWidgetLeft = new pqQVTKWidget(this);
 */
 
 
-drawArea->polygonComboBox=polygonList;
+//drawArea->polygonComboBox=polygonList;
 std::cout <<"drawarea initialized" << std::endl;
 
 

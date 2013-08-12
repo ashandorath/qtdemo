@@ -22,7 +22,7 @@
 
  */
 
-void twoDOpacityFunction::addPolygonToTable(std::vector<twoDOpacityFloatPoint> points,
+void twoDOpacityFunction::addPolygonToTable(const opacityPolygon &polygon,
 		double* table, float xStart, float xEnd, float yStart, float yEnd,
 		int sizeX, int sizeY, int strideX, int strideY) {
 
@@ -31,17 +31,17 @@ void twoDOpacityFunction::addPolygonToTable(std::vector<twoDOpacityFloatPoint> p
 	}
 
 
-//find starting and end points on the table
+//find starting and end polygon on the table
 	float maxX = 0, maxY = 0, minY, minX;
-	maxX = points[0].x;
-	minX = points[0].x;
-	maxY = points[0].y;
-	minY = points[0].y;
-	for (int i = 1; i < points.size(); i++) {
-		maxX = points[i].x > maxX ? points[i].x : maxX;
-		minX = points[i].x < maxX ? points[i].x : minX;
-		maxY = points[i].y > maxY ? points[i].y : maxY;
-		minY = points[i].y < minY ? points[i].y : minY;
+	maxX = polygon.point(0).fx;
+	minX = polygon.point(0).fx;
+	maxY = polygon.point(0).fy;
+	minY = polygon.point(0).fy;
+	for (int i = 1; i < polygon.count(); i++) {
+		maxX = polygon.point(i).fx > maxX ? polygon.point(i).fx : maxX;
+		minX = polygon.point(i).fx < maxX ? polygon.point(i).fx : minX;
+		maxY = polygon.point(i).fy > maxY ? polygon.point(i).fy : maxY;
+		minY = polygon.point(i).fy < minY ? polygon.point(i).fy : minY;
 	}
 
 	int xTableStart, xTableEnd, yTableStart, yTableEnd;
@@ -53,17 +53,17 @@ void twoDOpacityFunction::addPolygonToTable(std::vector<twoDOpacityFloatPoint> p
 
 //x is accross on the field, y is up down ->
 	float xpoint, ypoint;
-	float * weights = new float[points.size()];
+	float * weights = new float[polygon.count()];
 	for (int i = yTableStart; i < yTableEnd; i++) {
 		for (int j = xTableStart; j < xTableEnd; j++) {
 			xpoint = ((float)j)*((float)sizeX)/(minX - xStart);
 			ypoint = ((float)i)*((float)sizeY)/(minY-yStart);
-			if(insidePolygon(twoDOpacityFloatPoint(xpoint,ypoint),points))
+			if(insidePolygon(twoDOpacityPoint(xpoint,ypoint),polygon))
 			{
-				computeBarycentricCoordinates(twoDOpacityFloatPoint(xpoint,ypoint,0), points, weights);
+				computeBarycentricCoordinates(twoDOpacityPoint(xpoint,ypoint,0), polygon, weights);
 				double opacity = 0;
-				for (int k = 0; k< points.size(); k++){
-					opacity += weights[k]*points[k].opacity;
+				for (int k = 0; k< polygon.count(); k++){
+					opacity += weights[k]*polygon.point(k).opacity;
 				}
 				table[i*sizeY + j] = opacity;
 
@@ -76,7 +76,7 @@ void twoDOpacityFunction::addPolygonToTable(std::vector<twoDOpacityFloatPoint> p
 }
 
 void twoDOpacityFunction::getTable(
-		const std::vector<std::vector<twoDOpacityFloatPoint> > &areas, double* table,
+		const std::vector<std::vector<twoDOpacityPoint> > &areas, double* table,
 		double xStart, double xEnd, double yStart, double yEnd, int sizeX,
 		int sizeY, int strideX, int strideY) {
 

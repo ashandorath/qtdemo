@@ -12,9 +12,9 @@
 
 
 class PolygonComboBox;
-
-struct opacityPoint{
-	opacityPoint(QPoint pos){
+/*
+struct twoDOpacityPoint{
+	twoDOpacityPoint(QPoint pos){
 		position = pos;
 		opacity = 1;
 	}
@@ -22,20 +22,8 @@ struct opacityPoint{
 	float opacity;
 
 };
+*/
 
-struct opacityPolygon{
-	opacityPolygon(){
-
-	}
-	std::vector<opacityPoint> points;
-	opacityPoint point(int i) const{
-		return points[i];
-	}
-	int count() const{
-		return points.size();
-	}
-
-};
 
 
 class DrawArea : public QWidget
@@ -83,7 +71,7 @@ public:
      QImage image;
 
      int circleRadius;
-    // std::vector<opacityPoint> opacityPoints;
+    // std::vector<twoDOpacityPoint> twoDOpacityPoints;
      std::vector<opacityPolygon> polygons;
      unsigned int currentPolygon;
 
@@ -92,7 +80,7 @@ public:
 
      double minGradient, maxGradient, minValue, maxValue;
      float maximumDistanceFromLine;
-     void deleteOpacityPoint(int polygonIndex, int index);
+     void deletetwoDOpacityPoint(int polygonIndex, int index);
 
      unsigned int getSelectedPoint();
      unsigned int getSelectedPolygon();
@@ -103,7 +91,7 @@ public:
 
      int createNewPolygon();
 
-     void packUpAreas(std::vector<std::vector<twoDOpacityFloatPoint> > &areas);
+     void packUpAreas(std::vector<std::vector<twoDOpacityPoint> > &areas);
 
 
  protected:
@@ -115,7 +103,7 @@ public:
      void resizeEvent(QResizeEvent *event);
 
  private:
-     twoDOpacityFloatPoint drawPointToRealPoint(QPoint position, float opacity);
+     twoDOpacityPoint drawPointToRealPoint(QPoint position, float opacity);
 
      void colorOpacity();
      bool insidePolygon(float px, float py, const opacityPolygon &polygon);
