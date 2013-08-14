@@ -41,5 +41,5 @@ float cotangent(twoDOpacityPoint a, twoDOpacityPoint b, twoDOpacityPoint c) {
 
  bool insidePolygon(twoDOpacityPoint p,
 		 opacityPolygon polygon){
-
+   return false;
 }

@@ -1,13 +1,13 @@
-#include "vtkwindow.h"
+#include "vtkQTWindow.h"
 #include "vtkstuff.h"
 
 
-VtkWindow::VtkWindow(QWidget *parent) :
+vtkQTWindow::vtkQTWindow(QWidget *parent) :
 		QWidget(parent) {
 
 }
 
-void VtkWindow::setupWindow(){
+void vtkQTWindow::setupWindow(){
 
 	width = 600;
 	height = 400;

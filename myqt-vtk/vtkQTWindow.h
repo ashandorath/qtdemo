@@ -5,11 +5,11 @@
 
 class VtkInterface;
 
-class VtkWindow : public QWidget{
+class vtkQTWindow : public QWidget{
 
 
 public :
-	VtkWindow(QWidget *parent);
+	vtkQTWindow(QWidget *parent);
 	pqQVTKWidget *vtkDisplay;
 
 	void setupWindow();

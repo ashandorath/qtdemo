@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>pqTransferFunctionEditor</class>
+ <widget class="QWidget" name="pqTransferFunctionEditor">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>776</width>
+    <height>580</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout">
+   <item row="0" column="0" rowspan="6" colspan="3">
+    <widget class="Qvis2DTransferFunctionWidget" name="TransferFunction">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>1</horstretch>
+       <verstretch>1</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="lineWidth">
+      <number>0</number>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="3">
+    <widget class="pqDoubleEdit" name="YMax">
+     <property name="focusPolicy">
+      <enum>Qt::ClickFocus</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="3">
+    <widget class="pqDoubleEdit" name="YMin"/>
+   </item>
+   <item row="7" column="0">
+    <widget class="pqDoubleEdit" name="XMin"/>
+   </item>
+   <item row="7" column="1">
+    <spacer>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>271</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="7" column="2">
+    <widget class="pqDoubleEdit" name="XMax"/>
+   </item>
+   <item row="8" column="0" colspan="3">
+    <widget class="QCheckBox" name="XRangeAuto">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="text">
+      <string>Automatic X Range</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="3">
+    <widget class="QCheckBox" name="YRangeAuto">
+     <property name="text">
+      <string>Automatic Y Range</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="3">
+    <widget class="QComboBox" name="TransferFunctionMode">
+     <item>
+      <property name="text">
+       <string>Uniform</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Gaussian</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Right Half Gaussian</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Left Half Gaussian</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Top Half Gaussian</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Bottom Half Gaussian</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Sine</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Ramp Right</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Ramp Left</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="2" column="3">
+    <widget class="QLabel" name="label">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Transfer Function Mode</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0" colspan="3">
+    <widget class="QvisColourBar" name="ColorScale" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>50</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>50</height>
+      </size>
+     </property>
+     <property name="whatsThis">
+      <string>This displays the color scale. The control points determine how the gradient is rendered.</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="3">
+    <widget class="QPushButton" name="Apply">
+     <property name="text">
+      <string>Apply</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="3">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QSlider" name="OpacityLevel">
+       <property name="maximum">
+        <number>4999</number>
+       </property>
+       <property name="value">
+        <number>4999</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="tickPosition">
+        <enum>QSlider::TicksAbove</enum>
+       </property>
+       <property name="tickInterval">
+        <number>250</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Opacity Level</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>pqDoubleEdit</class>
+   <extends>QLineEdit</extends>
+   <header>pqDoubleEdit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>Qvis2DTransferFunctionWidget</class>
+   <extends>QFrame</extends>
+   <header>Qvis2DTransferFunctionWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QvisColourBar</class>
+   <extends>QWidget</extends>
+   <header>QvisColourBar.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

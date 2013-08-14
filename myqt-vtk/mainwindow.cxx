@@ -8,8 +8,8 @@
 #include "polygoncombobox.h"
 #include "errorwindow.h"
 
-
-
+#include "Qvis2DTransferFunctionWidget.h"
+#include "pqTransferFunctionDialog.h"
 
 
 MainWindow::MainWindow()
@@ -24,7 +24,7 @@ MainWindow::MainWindow()
      setWindowTitle(tr("OpacitySetter"));
      resize(1280, 840);
 
-     vtkWindow = new VtkWindow(this);
+     vtkWindow = new vtkQTWindow(this);
 
      vtkWindow->setWindowFlags(Qt::Window);
      vtkWindow->setupWindow();
@@ -168,6 +168,10 @@ setOpacity->setGeometry(QRect(480, 480, 113, 27));
 setOpacity->setText(QApplication::translate("MainWindow", "Apply Opacity", 0, QApplication::UnicodeUTF8));
 
 
+
+Qvis2DTransferFunctionWidget *dummy = new Qvis2DTransferFunctionWidget(this);
+dummy->setGeometry(QRect(490, 0, 300, 300));
+
 std::cout <<"drawarea initialized" << std::endl;
 
 
@@ -181,6 +185,7 @@ connect(newPolygon, SIGNAL(clicked()), this, SLOT(createNewPolygon()));
 
 connect(polygonList, SIGNAL(currentIndexChanged(int)), this, SLOT(handleSelectionChanged(int)));
 
+connect(renderButton,   SIGNAL(clicked()), this, SLOT(showPQ2DTFDialog()));
 
 }
 
@@ -233,4 +238,11 @@ void MainWindow::handleSelectionChanged(int index){
 
 void MainWindow::render(){
 
+}
+
+
+void MainWindow::showPQ2DTFDialog()
+{
+  pqTransferFunctionDialog *pqt = new pqTransferFunctionDialog(this);
+  pqt->exec();
 }

@@ -10,7 +10,7 @@
 #include <QtGui/QLabel>
 #include <QComboBox>
 #include "point.h"
-
+#include "vtkQTWindow.h"
 
 //#include "vtkstuff.h"
 
@@ -18,7 +18,7 @@
 
  class DrawArea;
 
- class VtkWindow;
+ class vtkQTWindow;
 
  class PolygonComboBox;
 
@@ -35,7 +35,7 @@
  PolygonComboBox *polygonList;
   DrawArea *drawArea;
 
-  VtkWindow *vtkWindow;
+  vtkQTWindow *vtkWindow;
 
 QPushButton *apply;
 QPushButton *setOpacity;
@@ -77,7 +77,7 @@ QLineEdit *opacityValue;
  void createNewPolygon();
  void handleSelectionChanged(int index);
  void render();
-
+ void showPQ2DTFDialog();
 
  private:
 void setupWindow();
